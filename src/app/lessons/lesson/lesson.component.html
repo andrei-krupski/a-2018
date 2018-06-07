@@ -1,0 +1,22 @@
+<div class="lesson">
+  <div class="lesson-data">
+    <p class="lesson-data__title">{{lesson.title}}</p>
+    <p class="lesson-data__date">{{lesson.creationDate | date : 'MM.dd.yyyy'}}</p>
+    <p class="lesson-data__duration">{{lesson.duration}}</p>
+    <p class="lesson-data__description">{{lesson.description}}</p>
+  </div>
+  <div class="lesson-control">
+    <button class="app-button app-button-primary lesson-control__edit" (click)="lesson.edit(lesson.id)">
+      <span class="app-button__inner">
+        <i class="material-icons app-button__icon">edit</i>
+        <span class="app-button__text">Edit</span>
+      </span>
+    </button>
+    <button class="app-button app-button-warn lesson-control__delete" (click)="deleteLesson(lesson.id)">
+      <span class="app-button__inner">
+        <i class="material-icons app-button__icon">delete</i>
+        <span class="app-button__text">Delete</span>
+      </span>
+    </button>
+  </div>
+</div>

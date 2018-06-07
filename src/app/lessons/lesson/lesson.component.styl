@@ -1,0 +1,40 @@
+.lesson
+    display: flex
+    min-height: 100px;
+    align-items: stretch
+    margin-bottom: 10px
+    padding: 10px
+    font-size: 1.4rem
+    box-shadow: inset 0 0 0 1px #cccccc
+
+    &-data
+        width: 100%
+        padding-right: 25px
+
+        &__title
+            float: left
+            margin: 0 0 10px
+            font-size: 1.8rem
+            font-weight: bold
+
+        &__duration,
+        &__date
+            float: right
+            margin: 0
+            color: #aaaaaa
+
+        &__date
+            margin-left: 10px
+
+        &__description
+            clear: both
+            color: #666666
+
+    &-control
+        width: 100px
+        display: flex
+        flex-direction: column
+        align-items: stretch
+
+        &__edit
+            margin-bottom: 5px
