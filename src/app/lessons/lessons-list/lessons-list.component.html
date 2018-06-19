@@ -10,8 +10,8 @@
   </div>
 
   <div class="lessons-list">
-      <app-lesson *ngFor="let lesson of lessons" [lessonData]=lesson></app-lesson>
+      <app-lesson *ngFor="let lesson of lessons" [lessonData]=lesson (deleteLessonEvent)="deleteLesson($event)"></app-lesson>
   </div>
 
-  <button class="app-button app-button-primary app-button-full-width">LOAD MORE</button>
+  <button class="app-button app-button-primary app-button-full-width" (click)="loadMore()">LOAD MORE</button>
 </div>

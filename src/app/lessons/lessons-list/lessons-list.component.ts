@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LessonModel } from '../lesson/lesson.model';
 
-import { LessonsService } from '../../lessons/lessons.service';
+import { LessonsService } from '../lessons.service';
 
 @Component({
   selector: 'app-lessons-list',
@@ -12,8 +12,18 @@ export class LessonsListComponent implements OnInit {
   lessons: LessonModel[];
 
   constructor(private lessonService: LessonsService) {
-    this.lessons = lessonService.getLessons();
+    this.lessons = [];
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.lessons = this.lessonService.getLessons();
+  }
+
+  deleteLesson(id: string) {
+    this.lessonService.deleteLessonById(id);
+  }
+
+  loadMore() {
+    console.log('Load more');
+  }
 }
