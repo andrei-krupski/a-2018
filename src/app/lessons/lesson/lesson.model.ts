@@ -3,7 +3,7 @@ export interface LessonModel {
     title: string;
     description: string;
     duration: string;
-    creationDate: Date;
+    creationDate: string;
 }
 
 export class Lesson implements LessonModel {
@@ -11,7 +11,7 @@ export class Lesson implements LessonModel {
     title: string;
     description: string;
     duration: string;
-    creationDate: Date;
+    creationDate: string;
 
     constructor(lesson: LessonModel) {
         this.id = lesson.id;

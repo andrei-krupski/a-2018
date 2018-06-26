@@ -1,18 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { routes } from './lessons.routes';
 
 import { LessonComponent } from './lesson/lesson.component';
 import { SearchComponent } from './search/search.component';
 import { LessonsListComponent } from './lessons-list/lessons-list.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: LessonsListComponent
-  }
-];
 
 @NgModule({
   imports: [

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../core/login.service';
 
+import { LoginDataModel } from '../login.model';
 import { UserModel } from '../../user/user.model';
 
 @Component({
@@ -15,7 +16,7 @@ export class HeaderComponent implements OnInit {
   constructor(private loginService: LoginService) {}
 
   logIn() {
-    const result = this.loginService.logIn('AndrewK', '1234');
+    const result: LoginDataModel = this.loginService.logIn('AndrewK', '1234');
 
     this.isLogged = result.success;
     this.user = result.user;
