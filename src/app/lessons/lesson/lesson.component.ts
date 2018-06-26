@@ -1,6 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Lesson, LessonModel } from './lesson.model';
-import { LessonsService } from '../../lessons/lessons.service';
 
 @Component({
   selector: 'app-lesson',
@@ -9,16 +8,17 @@ import { LessonsService } from '../../lessons/lessons.service';
 })
 export class LessonComponent implements OnInit {
   @Input() private lessonData: LessonModel;
+  @Output() deleteLessonEvent = new EventEmitter<string>();
 
   lesson: Lesson;
 
-  constructor(private lessonsService: LessonsService) {}
+  constructor() {}
 
   ngOnInit() {
     this.lesson = new Lesson(this.lessonData);
   }
 
   deleteLesson(id) {
-    this.lessonsService.deleteLessonById(id);
+    this.deleteLessonEvent.emit(id);
   }
 }
