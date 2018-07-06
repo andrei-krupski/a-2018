@@ -27,6 +27,5 @@ export class HeaderComponent implements OnInit {
     this.user = null;
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }
