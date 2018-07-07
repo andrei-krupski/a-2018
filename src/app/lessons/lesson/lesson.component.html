@@ -1,8 +1,11 @@
-<div class="lesson">
+<div class="lesson" [appLessonHighlight]="lesson.creationDate" [ngClass]="{'lesson--rated': lesson.topRated}">
   <div class="lesson-data">
-    <p class="lesson-data__title">{{lesson.title}}</p>
+    <p class="lesson-data__title">
+      {{lesson.title | uppercase}}
+      <i *ngIf="lesson.topRated" class="material-icons lesson-data__rated">start</i>
+    </p>
     <p class="lesson-data__date">{{lesson.creationDate | date : 'MM.dd.yyyy'}}</p>
-    <p class="lesson-data__duration">{{lesson.duration}}</p>
+    <p class="lesson-data__duration">{{lesson.duration | duration}}</p>
     <p class="lesson-data__description">{{lesson.description}}</p>
   </div>
   <div class="lesson-control">

@@ -2,16 +2,18 @@ export interface LessonModel {
     id: number;
     title: string;
     description: string;
-    duration: string;
+    duration: number;
     creationDate: string;
+    topRated: boolean;
 }
 
 export class Lesson implements LessonModel {
     id: number;
     title: string;
     description: string;
-    duration: string;
+    duration: number;
     creationDate: string;
+    topRated: boolean;
 
     constructor(lesson: LessonModel) {
         this.id = lesson.id;
@@ -19,6 +21,7 @@ export class Lesson implements LessonModel {
         this.description = lesson.description;
         this.duration = lesson.duration;
         this.creationDate = lesson.creationDate;
+        this.topRated = lesson.topRated;
     }
 
     add() {

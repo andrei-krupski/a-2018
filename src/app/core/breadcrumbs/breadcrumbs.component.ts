@@ -8,7 +8,6 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./breadcrumbs.component.styl']
 })
 export class BreadcrumbsComponent implements OnInit {
-
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute
@@ -20,5 +19,4 @@ export class BreadcrumbsComponent implements OnInit {
       console.log(root);
     });
   }
-
 }

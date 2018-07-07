@@ -10,8 +10,9 @@ const lessonData = {
   id: 1,
   title: 'title',
   description: 'description',
-  duration: 'duration',
-  creationDate: '01-01-1990'
+  duration: 20,
+  creationDate: '01-01-1990',
+  topRated: false
 };
 
 @Component({

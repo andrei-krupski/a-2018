@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LessonModel } from '../lesson/lesson.model';
 
 import { LessonsService } from '../lessons.service';
+import { FilterPipe } from '../pipes/filter.pipe';
 
 @Component({
   selector: 'app-lessons-list',
@@ -11,7 +12,10 @@ import { LessonsService } from '../lessons.service';
 export class LessonsListComponent implements OnInit {
   lessons: LessonModel[];
 
-  constructor(private lessonService: LessonsService) {
+  constructor(
+    private lessonService: LessonsService,
+    private filter: FilterPipe
+  ) {
     this.lessons = [];
   }
 
@@ -25,5 +29,9 @@ export class LessonsListComponent implements OnInit {
 
   loadMore() {
     console.log('Load more');
+  }
+
+  onSearch(searchText: string) {
+    this.lessons = this.filter.transform(this.lessonService.getLessons(), searchText);
   }
 }

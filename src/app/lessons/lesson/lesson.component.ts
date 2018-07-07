@@ -12,8 +12,6 @@ export class LessonComponent implements OnInit {
 
   lesson: Lesson;
 
-  constructor() {}
-
   ngOnInit() {
     this.lesson = new Lesson(this.lessonData);
   }

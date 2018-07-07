@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { LoginService } from '../core/login.service';
+import { LoginService } from './login.service';
 import { UserService } from '../user/shared/user.service';
 
 const userData = {
