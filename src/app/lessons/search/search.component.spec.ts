@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 
 import { SearchComponent } from './search.component';
 
@@ -8,6 +9,7 @@ describe('SearchComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ FormsModule ],
       declarations: [ SearchComponent ]
     })
     .compileComponents();
@@ -21,5 +23,13 @@ describe('SearchComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  // @TODO fix after adding real method
+  it('should call console.log on search', () => {
+    spyOn(console, 'log');
+
+    component.search();
+    expect(console.log).toHaveBeenCalled();
   });
 });

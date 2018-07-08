@@ -19,7 +19,7 @@ export class LessonsListComponent implements OnInit {
     this.lessons = this.lessonService.getLessons();
   }
 
-  deleteLesson(id: string) {
+  deleteLesson(id: number) {
     this.lessonService.deleteLessonById(id);
   }
 
