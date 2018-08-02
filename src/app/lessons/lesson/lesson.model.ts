@@ -1,5 +1,4 @@
-export interface LessonModel {
-    id: number;
+export interface NewLessonModel {
     title: string;
     description: string;
     duration: number;
@@ -7,28 +6,6 @@ export interface LessonModel {
     topRated: boolean;
 }
 
-export class Lesson implements LessonModel {
+export interface LessonModel extends NewLessonModel {
     id: number;
-    title: string;
-    description: string;
-    duration: number;
-    creationDate: string;
-    topRated: boolean;
-
-    constructor(lesson: LessonModel) {
-        this.id = lesson.id;
-        this.title = lesson.title;
-        this.description = lesson.description;
-        this.duration = lesson.duration;
-        this.creationDate = lesson.creationDate;
-        this.topRated = lesson.topRated;
-    }
-
-    add() {
-        console.log('Add lesson');
-    }
-
-    edit(id) {
-        console.log(`Edit lesson: ${id}`);
-    }
 }

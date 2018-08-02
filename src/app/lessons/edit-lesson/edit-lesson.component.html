@@ -1,0 +1,48 @@
+<form class="edit-lesson-form" role="form">
+  <div class="edit-lesson-form__error" *ngIf="error">
+    Please fill required fields.
+  </div>
+  <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--title">
+    <label for="lessonTitle" class="edit-lesson-form__label">Title:</label>
+    <input type="text" class="form-control app-input" id="lessonTitle" name="lessonTitle" [(ngModel)]="lesson.title" required>
+  </div>
+
+  <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--description">
+    <label for="lessonDescription" class="edit-lesson-form__label">Description:</label>
+    <textarea class="form-control app-input" id="lessonDescription" name="lessonDescription" rows="3" [(ngModel)]="lesson.description" required></textarea>
+  </div>
+
+  <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--date">
+    <label for="lessonDate" class="edit-lesson-form__label">Date:</label>
+    <app-lesson-date fieldId="lessonDate" name="lessonDate" [(ngModel)]="lesson.creationDate"></app-lesson-date>
+  </div>
+
+  <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--duration">
+    <label for="lessonDuration" class="edit-lesson-form__label">Duration:</label>
+    <app-lesson-duration fieldId="lessonDuration" name="lessonDuration" [(ngModel)]="lesson.duration"></app-lesson-duration>
+  </div>
+
+  <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--author">
+    <label for="lessonAuthor" class="edit-lesson-form__label">Authors:</label>
+    <!-- <app-lesson-author fieldId="lessonAuthor"></app-lesson-author> -->
+    <input type="text" class="form-control app-input" id="lessonAuthor" name="lessonAuthor" [(ngModel)]="lesson.author" required>
+  </div>
+
+  <div class="form-group edit-lesson-form__form-group  edit-lesson-form__form-group--top-rated">
+    <label for="lessonTopRated" class="edit-lesson-form__label">Top rated:</label>
+    <input type="checkbox" class="form-control" id="lessonTopRated" name="lessonTopRated" [(ngModel)]="lesson.topRated">
+  </div>
+
+  <div class="edit-lesson-form__buttons-box">
+    <button class="app-button app-button-primary edit-lesson-form__save-btn" (click)="saveLesson()">
+      <span class="app-button__inner">
+        <span class="app-button__text">Save</span>
+      </span>
+    </button>
+    <button class="app-button app-button-default edit-lesson-form__cancel-btn" routerLink="/lessons">
+      <span class="app-button__inner">
+        <span class="app-button__text">Cancel</span>
+      </span>
+    </button>
+  </div>
+</form>

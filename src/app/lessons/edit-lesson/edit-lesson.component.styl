@@ -1,0 +1,40 @@
+.edit-lesson-form
+
+    width 100%
+    max-width: 700px
+    margin: 30px auto 0
+
+    &__form-group
+        width 100%
+        margin-bottom: 15px
+
+        &--title .app-input
+            width: 100%
+
+        &--description .app-input
+            width: 100%
+            resize: vertical
+
+        &--top-rated
+            display: flex
+
+            input
+                margin-left: 15px
+            
+
+    &__label
+        display: block
+        margin-bottom: 5px
+        font-size: 1.6rem
+
+    &__save-btn,
+    &__cancel-btn
+        min-width: 70px
+
+    &__cancel-btn
+        margin-left: 10px
+
+    &__error
+        margin-bottom: 20px
+        font-size: 1.4rem
+        color: #ff0000

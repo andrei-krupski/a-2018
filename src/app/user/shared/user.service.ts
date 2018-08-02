@@ -6,6 +6,7 @@ import { UserModel } from '../user.model';
 const usersMock = [
   {
     id: 1,
+    email: 'a@b.ru',
     login: 'AndrewK',
     password: '1234',
     firstName: 'Andrew',
@@ -23,7 +24,7 @@ export class UserService {
     this.users = usersMock;
   }
 
-  getUser(login, password) {
-    return this.users.find(user => user.login === login && user.password === password);
+  getUser(email, password) {
+    return this.users.find(user => user.email === email && user.password === password);
   }
 }

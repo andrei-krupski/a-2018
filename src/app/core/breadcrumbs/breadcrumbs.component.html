@@ -1,3 +1,8 @@
-<div class="breadcrumbs">
-  <span class="breadcrumbs__path">breadcrumbs</span>
+<div class="breadcrumbs" *ngIf="!isDeprecadetPage">
+  <ul class="breadcrumbs__list" *ngIf="breadcrumbs.length">
+    <li class="breadcrumbs__list-item" *ngFor="let breadcrumb of breadcrumbs">
+      <a class="breadcrumbs__path" [routerLink]="breadcrumb.url" *ngIf="breadcrumb.url">{{breadcrumb.label}}</a>
+      <span class="breadcrumbs__path" *ngIf="!breadcrumb.url">{{breadcrumb.label}}</span>
+    </li>
+  </ul>
 </div>

@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
 import { LessonModel } from '../lesson/lesson.model';
+import { DeleteLessonDialogComponent } from '../delete-lesson-dialog/delete-lesson-dialog.component';
 
 import { LessonsService } from '../lessons.service';
+import { LoginService } from '../../core/login.service';
 import { FilterPipe } from '../pipes/filter.pipe';
 
 @Component({
@@ -14,7 +17,9 @@ export class LessonsListComponent implements OnInit {
 
   constructor(
     private lessonService: LessonsService,
-    private filter: FilterPipe
+    private lognService: LoginService,
+    private filter: FilterPipe,
+    private dialog: MatDialog
   ) {
     this.lessons = [];
   }
@@ -23,8 +28,23 @@ export class LessonsListComponent implements OnInit {
     this.lessons = this.lessonService.getLessons();
   }
 
+  editLesson(id: number) {
+    this.lessonService.updateLesson(id);
+  }
+
   deleteLesson(id: number) {
-    this.lessonService.deleteLessonById(id);
+    if (!this.lognService.isAuthenticated()) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(DeleteLessonDialogComponent, {width: '250px'});
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.lessonService.deleteLessonById(id);
+        this.lessons = this.lessonService.getLessons();
+      }
+    });
   }
 
   loadMore() {

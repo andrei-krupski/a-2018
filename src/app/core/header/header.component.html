@@ -1,15 +1,17 @@
 <header class="header">
   <div class="header__logo">
-    <img src="assets/img/a18_logo.svg">
+    <a routerLink="/">
+      <img src="assets/img/a18_logo.svg">
+    </a>
   </div>
-  <div class="header__login">
+  <div class="header__login" *ngIf="isHiddenLoginBox">
     <div *ngIf="isLogged; else notLoggedBox">
       <span class="header__user-name">{{user?.firstName}}</span>
-      <button class="app-button app-button-primary header__login-off" (click)="logOff()">Log off</button>
+      <button class="app-button app-button-primary header__login-off" (click)="logOut()">Log out</button>
     </div>
 
     <ng-template #notLoggedBox>
-      <button class="app-button app-button-default header__login-in" (click)="logIn()">Login</button>
+      <button class="app-button app-button-default header__login-in" routerLink="login">Login</button>
     </ng-template>
   </div>
 </header>

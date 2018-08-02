@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { createAotUrlResolver } from '@angular/compiler';
 
 // @TODO
 const lessonsData = [
@@ -62,7 +63,39 @@ export class LessonsService {
     return lessonsData;
   }
 
+  getLessonById(id) {
+    return lessonsData.find(lesson => lesson.id === parseInt(id, 0));
+  }
+
   deleteLessonById(id) {
-    console.log(id);
+    let courseIndex;
+
+    lessonsData.find((course, index) => {
+      if (course.id === id) {
+        courseIndex = index;
+        return true;
+      }
+
+      return false;
+    });
+
+    if (courseIndex !== undefined) {
+      lessonsData.splice(courseIndex, 1);
+    }
+  }
+
+  createLesson(data) {
+    lessonsData.push({
+      id: lessonsData.length + 1,
+      title: data.title || '',
+      description: data.description || '',
+      duration: data.duration || 0,
+      creationDate: data.creationDate || '',
+      topRated: data.topRated || false
+    });
+  }
+
+  updateLesson(data) {
+    Object.assign(lessonsData.find(lesson => lesson.id === parseInt(data.id, 0)), data);
   }
 }

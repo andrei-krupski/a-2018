@@ -1,0 +1,4 @@
+<input type="text" class="form-control app-input" matInput [matDatepicker]="picker" [id]="fieldId"
+    [(ngModel)]="date" (ngModelChange)="updateChanges()" placeholder="Choose a date">
+<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+<mat-datepicker #picker></mat-datepicker>

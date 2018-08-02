@@ -1,7 +1,7 @@
 <div class="lessons">
   <div class="lessons__toolbar">
       <app-search (searchEvent)=onSearch($event)></app-search>
-      <button class="app-button app-button-primary">
+      <button class="app-button app-button-primary" routerLink="/lessons/new">
           <span class="app-button__inner">
               <i class="material-icons app-button__icon">add</i>
               <span class="app-button__text">Add course</span>
@@ -11,7 +11,8 @@
 
   <div *ngIf="lessons && lessons.length; else noLessonsBox">
     <div class="lessons-list">
-        <app-lesson *ngFor="let lesson of lessons | sortByDate" [lessonData]=lesson (deleteLessonEvent)="deleteLesson($event)"></app-lesson>
+        <app-lesson *ngFor="let lesson of lessons | sortByDate" [lessonData]=lesson
+        (deleteLessonEvent)="deleteLesson($event)" (editLessonEvent)="editLesson($event)"></app-lesson>
     </div>
 
     <button class="app-button app-button-primary app-button-full-width" (click)="loadMore()">LOAD MORE</button>
