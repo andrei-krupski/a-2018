@@ -6,7 +6,7 @@
   </div>
   <div class="header__login" *ngIf="isHiddenLoginBox">
     <div *ngIf="isLogged; else notLoggedBox">
-      <span class="header__user-name">{{user?.firstName}}</span>
+      <span class="header__user-name">{{user?.name.first}}</span>
       <button class="app-button app-button-primary header__login-off" (click)="logOut()">Log out</button>
     </div>
 

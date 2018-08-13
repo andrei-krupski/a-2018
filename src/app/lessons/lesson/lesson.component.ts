@@ -10,7 +10,6 @@ import { LessonModel } from './lesson.model';
 export class LessonComponent implements OnInit {
   @Input() private lessonData: LessonModel;
   @Output() deleteLessonEvent = new EventEmitter<number>();
-  @Output() editLessonEvent = new EventEmitter<number>();
 
   lesson: LessonModel;
 
@@ -20,9 +19,5 @@ export class LessonComponent implements OnInit {
 
   deleteLesson() {
     this.deleteLessonEvent.emit(this.lesson.id);
-  }
-
-  editLesson() {
-    this.editLessonEvent.emit(this.lesson.id);
   }
 }

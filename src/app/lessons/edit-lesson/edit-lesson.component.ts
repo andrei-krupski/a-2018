@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { LessonsService } from '../lessons.service';
-import { NewLessonModel } from '../lesson/lesson.model';
+import { LessonModel } from '../lesson/lesson.model';
 
 @Component({
   selector: 'app-edit-lesson',
@@ -13,12 +13,13 @@ import { NewLessonModel } from '../lesson/lesson.model';
 export class EditLessonComponent implements OnInit {
   private isNew = true;
   error = false;
-  lesson: NewLessonModel = {
+  lesson: LessonModel = {
     title: '',
     description: '',
     duration: 0,
     creationDate: '',
-    topRated: false
+    topRated: false,
+    authors: []
   };
 
   constructor(
@@ -33,7 +34,7 @@ export class EditLessonComponent implements OnInit {
     this.isNew = !lessonId;
 
     if (lessonId) {
-      this.lesson = this.lessonServise.getLessonById(lessonId);
+      this.lessonServise.getLessonById(lessonId).subscribe((lesson => this.lesson = lesson));
     }
   }
 
@@ -46,7 +47,8 @@ export class EditLessonComponent implements OnInit {
       return;
     }
 
-    this.isNew ? this.lessonServise.createLesson(this.lesson) : this.lessonServise.updateLesson(this.lesson);
-    this.router.navigate(['/lessons']);
+    this.lessonServise[this.isNew ? 'createLesson' : 'updateLesson'](this.lesson).subscribe(() => {
+      this.router.navigate(['/lessons']);
+    });
   }
 }

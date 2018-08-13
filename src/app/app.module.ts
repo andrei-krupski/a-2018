@@ -7,14 +7,14 @@ import { CoreModule } from './core/core.module';
 import { LessonsModule } from './lessons/lessons.module';
 
 import { AppComponent } from './app.component';
-import { UserComponent } from './user/user.component';
 
 import { routes } from './app.routes';
 
+import { authInterceptorProvider } from './http-interceptors';
+
 @NgModule({
   declarations: [
-    AppComponent,
-    UserComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +23,7 @@ import { routes } from './app.routes';
     LessonsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [authInterceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

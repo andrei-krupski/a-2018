@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { RouterModule } from '@angular/router';
 import { routes } from './core.routes';
@@ -16,6 +17,7 @@ import { NotFoundPageComponent } from './not-found-page/not-found-page.component
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
     RouterModule.forRoot(routes)
   ],
   declarations: [

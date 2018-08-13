@@ -12,10 +12,10 @@ import { LoginDataModel } from '../login.model';
 })
 export class LoginPageComponent {
   formData: LoginFormModel = {
-    email: '',
+    login: '',
     password: ''
   };
-  isLoginError = false;
+  loginError = false;
 
   constructor(
     private router: Router,
@@ -23,15 +23,12 @@ export class LoginPageComponent {
   ) {}
 
   login() {
-    this.isLoginError = false;
+    this.loginError = false;
 
-    const loginResult: LoginDataModel = this.loginService.logIn(this.formData);
-
-    this.isLoginError = !loginResult.success;
-
-    if (loginResult.success) {
+    this.loginService.logIn(this.formData).subscribe((result: LoginDataModel) => {
       this.router.navigate(['/']);
-      this.loginService.onLoginChange();
-    }
+    }, (errMessage) => {
+      this.loginError = errMessage;
+    });
   }
 }

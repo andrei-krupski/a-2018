@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { LessonModel } from '../lesson/lesson.model';
+import { LessonModel, InnerLessonsModel } from '../lesson/lesson.model';
 import { DeleteLessonDialogComponent } from '../delete-lesson-dialog/delete-lesson-dialog.component';
 
 import { LessonsService } from '../lessons.service';
 import { LoginService } from '../../core/login.service';
-import { FilterPipe } from '../pipes/filter.pipe';
+
+import { LESSONS_INCREASE_COUNT, DEFAULT_LESSONS_QUERY_PARAMS } from '../../app.config';
 
 @Component({
   selector: 'app-lessons-list',
@@ -14,22 +15,35 @@ import { FilterPipe } from '../pipes/filter.pipe';
 })
 export class LessonsListComponent implements OnInit {
   lessons: LessonModel[];
+  total: number;
+  params = Object.assign({}, DEFAULT_LESSONS_QUERY_PARAMS);
+  noLessonsMsg = 'No data. Feel free to add new course';
 
   constructor(
     private lessonService: LessonsService,
     private lognService: LoginService,
-    private filter: FilterPipe,
     private dialog: MatDialog
   ) {
     this.lessons = [];
   }
 
-  ngOnInit() {
-    this.lessons = this.lessonService.getLessons();
+  private getLessons() {
+    this.noLessonsMsg = 'No data. Feel free to add new course';
+
+    this.lessonService.getLessons(this.params).subscribe(
+      (res: InnerLessonsModel) => {
+        this.lessons = res.courses || null;
+        this.total = res.total;
+      },
+      (errMessage) => {
+        this.lessons = null;
+        this.noLessonsMsg = errMessage;
+      }
+    );
   }
 
-  editLesson(id: number) {
-    this.lessonService.updateLesson(id);
+  ngOnInit() {
+    this.getLessons();
   }
 
   deleteLesson(id: number) {
@@ -41,17 +55,20 @@ export class LessonsListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.lessonService.deleteLessonById(id);
-        this.lessons = this.lessonService.getLessons();
+        this.lessonService.deleteLessonById(id).subscribe(() => this.getLessons());
       }
     });
   }
 
   loadMore() {
-    console.log('Load more');
+    this.params.count = this.lessons.length + LESSONS_INCREASE_COUNT;
+    this.getLessons();
   }
 
   onSearch(searchText: string) {
-    this.lessons = this.filter.transform(this.lessonService.getLessons(), searchText);
+    this.params.count = DEFAULT_LESSONS_QUERY_PARAMS.count;
+    this.params.textFragment = searchText;
+
+    this.getLessons();
   }
 }

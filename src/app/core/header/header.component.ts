@@ -24,12 +24,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.isLogged = this.loginService.isAuthenticated();
-    this.user = this.loginService.getUserInfo();
+    if (this.loginService.isAuthenticated()) {
+      this.isLogged = true;
+      this.getUser();
+    }
 
     const loginSubcrb = this.loginService.isLogged.subscribe(result => {
       this.isLogged = result;
-      this.user = this.loginService.getUserInfo();
+
+      if (result) {
+        this.getUser();
+      } else {
+        this.user = null;
+      }
     });
 
     const routerSubscrb = this.routerService.onRouteChange.subscribe(data => {
@@ -41,6 +48,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptions.forEach(subscription => subscription());
+  }
+
+  private getUser() {
+    this.loginService.getUserInfo().subscribe((user: UserModel) => this.user = user);
   }
 
   logOut() {

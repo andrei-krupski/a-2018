@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Subject, Observable, throwError } from 'rxjs';
 
 import { LoginDataModel } from './login.model';
 import { UserModel } from '../user/user.model';
 import { LoginFormModel } from './login-page/login-form.model';
-import { UserService } from '../user/shared/user.service';
+
+import { SERVER_DOMAIN } from '../app.config';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -13,34 +16,55 @@ export class LoginService {
   private isLoggedSource = new Subject<boolean>();
   isLogged = this.isLoggedSource.asObservable();
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private http: HttpClient
+  ) {}
 
-  logIn(data: LoginFormModel): LoginDataModel {
-    const user: UserModel = this.userService.getUser(data.email, data.password);
-    localStorage.setItem('customUser', JSON.stringify(user));
+  private handleError(error: HttpErrorResponse) {
+    let message: string;
 
-    return {
-      success: Boolean(user),
-      user
-    };
+    if (error.error instanceof ErrorEvent) {
+      console.error('An error occurred: ', error.error.message);
+      message = 'Network error, please try later.';
+    } else {
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`
+      );
+      message = error.error;
+    }
+
+    return throwError(message);
+  }
+
+  logIn(data: LoginFormModel): Observable<LoginDataModel> {
+    return this.http
+      .post<LoginDataModel>(`${SERVER_DOMAIN}/auth/login`, data)
+      .pipe(tap((res: LoginDataModel) => {
+        localStorage.setItem('authToken', res.token);
+        this.onLoginChange();
+      }))
+      .pipe(catchError(this.handleError));
   }
 
   logOut() {
-    localStorage.removeItem('customUser');
+    localStorage.removeItem('authToken');
     this.onLoginChange();
-  }
-
-  isAuthenticated() {
-    return Boolean(localStorage.getItem('customUser'));
   }
 
   onLoginChange() {
     this.isLoggedSource.next(this.isAuthenticated());
   }
 
-  getUserInfo() {
-    const userCredencials = localStorage.getItem('customUser');
+  getUserInfo(): Observable<UserModel> {
+    return this.http.post<UserModel>(`${SERVER_DOMAIN}/auth/userinfo`, {});
+  }
 
-    return userCredencials ? JSON.parse(userCredencials) : null;
+  isAuthenticated() {
+    return Boolean(localStorage.getItem('authToken'));
+  }
+
+  getAuthorizationToken() {
+    return this.isAuthenticated() ? localStorage.getItem('authToken') : '';
   }
 }

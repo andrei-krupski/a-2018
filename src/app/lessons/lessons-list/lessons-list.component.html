@@ -12,15 +12,18 @@
   <div *ngIf="lessons && lessons.length; else noLessonsBox">
     <div class="lessons-list">
         <app-lesson *ngFor="let lesson of lessons | sortByDate" [lessonData]=lesson
-        (deleteLessonEvent)="deleteLesson($event)" (editLessonEvent)="editLesson($event)"></app-lesson>
+        (deleteLessonEvent)="deleteLesson($event)"></app-lesson>
     </div>
 
-    <button class="app-button app-button-primary app-button-full-width" (click)="loadMore()">LOAD MORE</button>
+    <button class="app-button app-button-primary app-button-full-width"
+        *ngIf="lessons.length < total" (click)="loadMore()">
+        LOAD MORE
+    </button>
   </div>
 
   <ng-template #noLessonsBox>
       <p class="lessons__no-lessons">
-        No data. Feel free to add new course
+        {{noLessonsMsg}}
       </p>
   </ng-template>
 </div>

@@ -1,101 +1,105 @@
 import { Injectable } from '@angular/core';
-import { createAotUrlResolver } from '@angular/compiler';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 
-// @TODO
-const lessonsData = [
-  {
-    id: 1,
-    title: 'Video Course 1',
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.',
-    duration: 65,
-    creationDate: '06-05-2018',
-    topRated: true
-  },
-  {
-    id: 2,
-    title: 'Video Course 2',
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.',
-    duration: 57,
-    creationDate: '06-13-2018',
-    topRated: false
-  },
-  {
-    id: 3,
-    title: 'Video Course 3',
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.',
-    duration: 76,
-    creationDate: '06-19-2018',
-    topRated: true
-  },
-  {
-    id: 4,
-    title: 'Video Course 4',
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.',
-    duration: 233,
-    creationDate: '06-26-2018',
-    topRated: false
-  },
-  {
-    id: 5,
-    title: 'Video Course 5',
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.',
-    duration: 52,
-    creationDate: '07-04-2018',
-    topRated: false
-  },
-  {
-    id: 6,
-    title: 'Video Course 6',
-    description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the.',
-    duration: 77,
-    creationDate: '07-15-2018',
-    topRated: false
-  }
-];
+import { DEFAULT_LESSONS_QUERY_PARAMS, SERVER_DOMAIN } from '../app.config';
+import { throwError, Observable } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+import { OriginLessonModel, LessonModel, ResponseLessonsModel, InnerLessonsModel } from './lesson/lesson.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LessonsService {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getLessons() {
-    return lessonsData;
+  private getHttpParams(params) {
+    let newParams: HttpParams = new HttpParams();
+
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        newParams = newParams.set(key, params[key]);
+      }
+    }
+
+    return newParams;
   }
 
-  getLessonById(id) {
-    return lessonsData.find(lesson => lesson.id === parseInt(id, 0));
+  private transformLesson(lesson: OriginLessonModel): LessonModel {
+    return {
+      id: lesson.id,
+      title: lesson.name,
+      description: lesson.description,
+      duration: lesson.length,
+      creationDate: lesson.date,
+      topRated: lesson.isTopRated,
+      authors: lesson.authors
+    };
+  }
+
+  private transformLessonForRequest(lesson: LessonModel): OriginLessonModel {
+    const newLesson: OriginLessonModel = {
+      name: lesson.title || '',
+      description: lesson.description || '',
+      length: lesson.duration || 0,
+      date: lesson.creationDate || '',
+      isTopRated: lesson.topRated || false,
+      authors: lesson.authors || []
+    };
+
+    if (lesson.id) {
+      newLesson.id = lesson.id;
+    }
+
+    return newLesson;
+  }
+
+  private transformLessons(lessons: OriginLessonModel[]): LessonModel[] {
+    return lessons.map((item: OriginLessonModel) => this.transformLesson(item));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let message: string;
+
+    if (error.error instanceof ErrorEvent) {
+      console.error('An error occurred: ', error.error.message);
+      message = 'Network error, please try later';
+    } else {
+      console.error(
+        `Backend returned code ${error.status}, ` +
+        `body was: ${error.error}`
+      );
+      message = 'Server error, please try later';
+    }
+
+    return throwError(message);
+  }
+
+  getLessons(params = DEFAULT_LESSONS_QUERY_PARAMS): Observable<InnerLessonsModel> {
+    return this.http
+      .get(`${SERVER_DOMAIN}/courses`, {params: this.getHttpParams(params)})
+      .pipe(map((res: ResponseLessonsModel): InnerLessonsModel => ({
+        courses: this.transformLessons(res.courses),
+        total: res.total
+      })))
+      .pipe(catchError(this.handleError));
+  }
+
+  getLessonById(id): Observable<LessonModel> {
+    return this.http.get(`${SERVER_DOMAIN}/courses/${id}`)
+      .pipe(map((res: OriginLessonModel): LessonModel => this.transformLesson(res)))
+      .pipe(catchError(this.handleError));
   }
 
   deleteLessonById(id) {
-    let courseIndex;
-
-    lessonsData.find((course, index) => {
-      if (course.id === id) {
-        courseIndex = index;
-        return true;
-      }
-
-      return false;
-    });
-
-    if (courseIndex !== undefined) {
-      lessonsData.splice(courseIndex, 1);
-    }
+    return this.http.delete(`${SERVER_DOMAIN}/courses/${id}`);
   }
 
   createLesson(data) {
-    lessonsData.push({
-      id: lessonsData.length + 1,
-      title: data.title || '',
-      description: data.description || '',
-      duration: data.duration || 0,
-      creationDate: data.creationDate || '',
-      topRated: data.topRated || false
-    });
+    return this.http.post(`${SERVER_DOMAIN}/courses`, this.transformLessonForRequest(data));
   }
 
   updateLesson(data) {
-    Object.assign(lessonsData.find(lesson => lesson.id === parseInt(data.id, 0)), data);
+    return this.http.patch(`${SERVER_DOMAIN}/courses/${data.id}`, this.transformLessonForRequest(data));
   }
 }
