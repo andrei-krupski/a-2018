@@ -1,4 +1,5 @@
 <form class="search" role="form">
-  <input type="text" class="app-input search__input" name="searchInputText" [(ngModel)]="searchInputText" placeholder="Name, fragment or date">
-  <button class="app-button app-button-primary search__submit" (click)=search()>Search</button>
+  <input type="text" class="app-input search__input" name="searchInputText"
+    [(ngModel)]="searchInputText" (input)="searchInputObsSourse.next(searchInputText)"
+    placeholder="Name, fragment or date">
 </form>

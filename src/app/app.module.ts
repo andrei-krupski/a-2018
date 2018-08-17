@@ -10,11 +10,13 @@ import { AppComponent } from './app.component';
 
 import { routes } from './app.routes';
 
-import { authInterceptorProvider } from './http-interceptors';
+import { authInterceptorProvider, loaderInterceptorProvider } from './http-interceptors';
+import { LoadingBlockComponent } from './loading-block/loading-block.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoadingBlockComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +25,7 @@ import { authInterceptorProvider } from './http-interceptors';
     LessonsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [authInterceptorProvider],
+  providers: [authInterceptorProvider, loaderInterceptorProvider],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

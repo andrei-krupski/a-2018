@@ -13,12 +13,15 @@ export class LessonGuard implements CanActivate {
     private loginService: LoginService
   ) {}
 
-  canActivate(): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.loginService.isAuthenticated()) {
-      return true;
-    }
+  canActivate(): Observable<boolean>  {
+    return new Observable((observer) => {
+      const isAuthenticated = this.loginService.isAuthenticated();
 
-    this.router.navigate(['/login']);
-    return false;
+      if (!isAuthenticated) {
+        this.router.navigate(['/login']);
+      }
+
+      observer.next(isAuthenticated);
+    });
   }
 }
