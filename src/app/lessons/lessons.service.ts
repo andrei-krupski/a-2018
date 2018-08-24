@@ -1,17 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { throwError, Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
 
 import { DEFAULT_LESSONS_QUERY_PARAMS, SERVER_DOMAIN } from '../app.config';
-import { throwError, Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-
-import { OriginLessonModel, LessonModel, ResponseLessonsModel, InnerLessonsModel } from './lesson/lesson.model';
+import { OriginLessonModel, LessonModel, ResponseLessonsModel } from './lesson/lesson.model';
+import { AppState } from '../app.states';
+import { SetLessonsAction, SetLessonsErrorAction } from '../actions';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LessonsService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private store: Store<AppState>
+  ) {}
 
   private getHttpParams(params) {
     let newParams: HttpParams = new HttpParams();
@@ -72,17 +77,21 @@ export class LessonsService {
       message = 'Server error, please try later';
     }
 
+    this.store.dispatch(new SetLessonsErrorAction(message));
     return throwError(message);
   }
 
-  getLessons(params = DEFAULT_LESSONS_QUERY_PARAMS): Observable<InnerLessonsModel> {
-    return this.http
+  getLessons(params = DEFAULT_LESSONS_QUERY_PARAMS): void {
+    this.http
       .get(`${SERVER_DOMAIN}/courses`, {params: this.getHttpParams(params)})
-      .pipe(map((res: ResponseLessonsModel): InnerLessonsModel => ({
-        courses: this.transformLessons(res.courses),
-        total: res.total
-      })))
-      .pipe(catchError(this.handleError));
+      .pipe(tap((res: ResponseLessonsModel) => {
+        this.store.dispatch(new SetLessonsAction({
+          courses: this.transformLessons(res.courses),
+          total: res.total
+        }));
+      }))
+      .pipe(catchError(this.handleError))
+      .subscribe();
   }
 
   getLessonById(id): Observable<LessonModel> {

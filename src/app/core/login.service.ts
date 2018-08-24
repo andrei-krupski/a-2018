@@ -1,23 +1,24 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Subject, Observable, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { catchError, tap } from 'rxjs/operators';
 
 import { LoginDataModel } from './login.model';
 import { UserModel } from '../user/user.model';
 import { LoginFormModel } from './login-page/login-form.model';
+import { LoginAction, LogoutAction, SetUserAction, DeleteUserAction } from '../actions';
+import { AppState } from '../app.states';
 
 import { SERVER_DOMAIN } from '../app.config';
-import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
-  private isLoggedSource = new Subject<boolean>();
-  isLogged = this.isLoggedSource.asObservable();
-
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<AppState>
   ) {}
 
   private handleError(error: HttpErrorResponse) {
@@ -42,22 +43,24 @@ export class LoginService {
       .post<LoginDataModel>(`${SERVER_DOMAIN}/auth/login`, data)
       .pipe(tap((res: LoginDataModel) => {
         localStorage.setItem('authToken', res.token);
-        this.onLoginChange();
+        this.store.dispatch(new LoginAction());
+        this.getUserInfo();
       }))
       .pipe(catchError(this.handleError));
   }
 
   logOut() {
     localStorage.removeItem('authToken');
-    this.onLoginChange();
+    this.store.dispatch(new LogoutAction());
+    this.store.dispatch(new DeleteUserAction());
   }
 
-  onLoginChange() {
-    this.isLoggedSource.next(this.isAuthenticated());
-  }
-
-  getUserInfo(): Observable<UserModel> {
-    return this.http.post<UserModel>(`${SERVER_DOMAIN}/auth/userinfo`, {});
+  getUserInfo(): void {
+    this.http.post<UserModel>(`${SERVER_DOMAIN}/auth/userinfo`, {})
+      .pipe(tap((user: UserModel) => {
+        this.store.dispatch(new SetUserAction(user));
+      }))
+      .subscribe();
   }
 
   isAuthenticated() {

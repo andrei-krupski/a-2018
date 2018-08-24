@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { LoginService } from '../login.service';
 
 import { LoginFormModel } from './login-form.model';
-import { LoginDataModel } from '../login.model';
 
 @Component({
   selector: 'app-login-page',
@@ -25,7 +24,7 @@ export class LoginPageComponent {
   login() {
     this.loginError = false;
 
-    this.loginService.logIn(this.formData).subscribe((result: LoginDataModel) => {
+    this.loginService.logIn(this.formData).subscribe(() => {
       this.router.navigate(['/']);
     }, (errMessage) => {
       this.loginError = errMessage;

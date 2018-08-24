@@ -16,7 +16,6 @@ export class LoaderInterceptor implements HttpInterceptor {
         return next.handle(req)
             .pipe(tap((event: HttpEvent<any>) => {
                 if (event instanceof HttpResponse || event instanceof HttpErrorResponse) {
-                    console.log(event);
                     this.loadingBlockService.hideLoader();
                 }
             }));

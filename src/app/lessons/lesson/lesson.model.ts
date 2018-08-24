@@ -24,8 +24,3 @@ export interface ResponseLessonsModel {
     courses: OriginLessonModel[];
     total: number;
 }
-
-export interface InnerLessonsModel {
-    courses: LessonModel[];
-    total: number;
-}

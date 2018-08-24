@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { LessonModel, InnerLessonsModel } from '../lesson/lesson.model';
+import { Store, select } from '@ngrx/store';
+import { LessonModel } from '../lesson/lesson.model';
 import { DeleteLessonDialogComponent } from '../delete-lesson-dialog/delete-lesson-dialog.component';
 
 import { LessonsService } from '../lessons.service';
 import { LoginService } from '../../core/login.service';
+import { AppState, lessonsSelector } from '../../app.states';
 
 import { LESSONS_INCREASE_COUNT, DEFAULT_LESSONS_QUERY_PARAMS } from '../../app.config';
 
@@ -13,13 +15,15 @@ import { LESSONS_INCREASE_COUNT, DEFAULT_LESSONS_QUERY_PARAMS } from '../../app.
   templateUrl: './lessons-list.component.html',
   styleUrls: ['./lessons-list.component.styl']
 })
-export class LessonsListComponent implements OnInit {
+export class LessonsListComponent implements OnInit, OnDestroy {
   lessons: LessonModel[];
   total: number;
   params = Object.assign({}, DEFAULT_LESSONS_QUERY_PARAMS);
   noLessonsMsg = 'No data. Feel free to add new course';
+  private subscriptions = [];
 
   constructor(
+    private store: Store<AppState>,
     private lessonService: LessonsService,
     private lognService: LoginService,
     private dialog: MatDialog
@@ -27,23 +31,22 @@ export class LessonsListComponent implements OnInit {
     this.lessons = [];
   }
 
-  private getLessons() {
-    this.noLessonsMsg = 'No data. Feel free to add new course';
+  ngOnInit() {
+    const lessonsSubcrb = this.store.pipe(select(lessonsSelector)).subscribe(lessonsData => {
+      this.lessons = lessonsData.lessons || null;
+      this.total = lessonsData.total || 0;
+      this.noLessonsMsg = lessonsData.errorMsg;
+    });
 
-    this.lessonService.getLessons(this.params).subscribe(
-      (res: InnerLessonsModel) => {
-        this.lessons = res.courses || null;
-        this.total = res.total;
-      },
-      (errMessage) => {
-        this.lessons = null;
-        this.noLessonsMsg = errMessage;
-      }
-    );
+    this.lessonService.getLessons(this.params);
+
+    this.subscriptions.push(lessonsSubcrb);
   }
 
-  ngOnInit() {
-    this.getLessons();
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe ? subscription.unsubscribe() : subscription();
+    });
   }
 
   deleteLesson(id: number) {
@@ -55,20 +58,20 @@ export class LessonsListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.lessonService.deleteLessonById(id).subscribe(() => this.getLessons());
+        this.lessonService.deleteLessonById(id).subscribe(() => this.lessonService.getLessons(this.params));
       }
     });
   }
 
   loadMore() {
     this.params.count = this.lessons.length + LESSONS_INCREASE_COUNT;
-    this.getLessons();
+    this.lessonService.getLessons(this.params);
   }
 
   onSearch(searchText: string) {
     this.params.count = DEFAULT_LESSONS_QUERY_PARAMS.count;
     this.params.textFragment = searchText;
 
-    this.getLessons();
+    this.lessonService.getLessons(this.params);
   }
 }

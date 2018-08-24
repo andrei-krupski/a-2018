@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store, select } from '@ngrx/store';
 import { LoginService } from '../login.service';
 import { RouterService } from '../router.service';
+
+import { AppState, authSelector, userSelector } from '../../app.states';
+import { LoginAction } from '../../actions';
 
 import { UserModel } from '../../user/user.model';
 import { HEADER_LOGIN_DEPRECATED_PAGES } from '../../app.config';
@@ -20,38 +24,35 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private loginService: LoginService,
-    private routerService: RouterService
+    private routerService: RouterService,
+    private store: Store<AppState>
   ) {}
 
   ngOnInit() {
-    if (this.loginService.isAuthenticated()) {
-      this.isLogged = true;
-      this.getUser();
-    }
+    const loginSubcrb = this.store.pipe(select(authSelector)).subscribe(value => {
+      this.isLogged = value;
+    });
 
-    const loginSubcrb = this.loginService.isLogged.subscribe(result => {
-      this.isLogged = result;
-
-      if (result) {
-        this.getUser();
-      } else {
-        this.user = null;
-      }
+    const userSubcrb = this.store.pipe(select(userSelector)).subscribe(user => {
+      this.user = user;
     });
 
     const routerSubscrb = this.routerService.onRouteChange.subscribe(data => {
       this.isHiddenLoginBox = !HEADER_LOGIN_DEPRECATED_PAGES.some(path => data.url.includes(path));
     });
 
-    this.subscriptions.push(loginSubcrb, routerSubscrb);
+    if (this.loginService.isAuthenticated()) {
+      this.store.dispatch(new LoginAction());
+      this.loginService.getUserInfo();
+    }
+
+    this.subscriptions.push(loginSubcrb, userSubcrb, routerSubscrb);
   }
 
   ngOnDestroy() {
-    this.subscriptions.forEach(subscription => subscription());
-  }
-
-  private getUser() {
-    this.loginService.getUserInfo().subscribe((user: UserModel) => this.user = user);
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe ? subscription.unsubscribe() : subscription();
+    });
   }
 
   logOut() {
