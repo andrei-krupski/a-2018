@@ -6,8 +6,9 @@ import { Store } from '@ngrx/store';
 
 import { DEFAULT_LESSONS_QUERY_PARAMS, SERVER_DOMAIN } from '../app.config';
 import { OriginLessonModel, LessonModel, ResponseLessonsModel } from './lesson/lesson.model';
+import { AuthorModel } from './author.model';
 import { AppState } from '../app.states';
-import { SetLessonsAction, SetLessonsErrorAction } from '../actions';
+import { SetLessonsAction, SetLessonsErrorAction, SetAuthorsAction } from '../actions';
 
 @Injectable({
   providedIn: 'root'
@@ -110,5 +111,11 @@ export class LessonsService {
 
   updateLesson(data) {
     return this.http.patch(`${SERVER_DOMAIN}/courses/${data.id}`, this.transformLessonForRequest(data));
+  }
+
+  getAuthors() {
+    this.http.get(`${SERVER_DOMAIN}/authors`).subscribe((authors: AuthorModel[]) => {
+      this.store.dispatch(new SetAuthorsAction(authors));
+    });
   }
 }

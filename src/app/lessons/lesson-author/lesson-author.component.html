@@ -1,1 +1,26 @@
-<input type="text" class="form-control app-input" [id]="fieldId">
+<div class="lesson-author">
+    <mat-chip-list #chipList class="lesson-author__selected-authors">
+        <mat-chip
+            *ngFor="let author of currentAuthors"
+            [selectable]="selectable"
+            [removable]="removable"
+            (removed)="remove(author)">
+            {{author.name}}
+            <i matChipRemove *ngIf="removable" class="material-icons">cancel</i>
+        </mat-chip>
+        <input
+            class="form-control app-input lesson-author__author-input"
+            placeholder="Select authors"
+            #authorInput
+            [(ngModel)]="authorsInputModel"
+            (ngModelChange)="onAuthorInput($event)"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <mat-option *ngFor="let author of filteredAuthors" [value]="author.id">
+            {{author.name}}
+        </mat-option>
+    </mat-autocomplete>
+</div>

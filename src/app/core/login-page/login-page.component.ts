@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginService } from '../login.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import { LoginService } from '../login.service';
 import { LoginFormModel } from './login-form.model';
 
 @Component({
@@ -10,10 +11,10 @@ import { LoginFormModel } from './login-form.model';
   styleUrls: ['./login-page.component.styl']
 })
 export class LoginPageComponent {
-  formData: LoginFormModel = {
-    login: '',
-    password: ''
-  };
+  loginFom = new FormGroup({
+    login: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
+  });
   loginError = false;
 
   constructor(
@@ -24,7 +25,11 @@ export class LoginPageComponent {
   login() {
     this.loginError = false;
 
-    this.loginService.logIn(this.formData).subscribe(() => {
+    if (this.loginFom.invalid) {
+      return;
+    }
+
+    this.loginService.logIn(this.loginFom.value).subscribe(() => {
       this.router.navigate(['/']);
     }, (errMessage) => {
       this.loginError = errMessage;

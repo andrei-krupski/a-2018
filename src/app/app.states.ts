@@ -2,6 +2,7 @@ import { createSelector } from '@ngrx/store';
 
 import { UserModel } from './user/user.model';
 import { LessonModel } from './lessons/lesson/lesson.model';
+import { AuthorModel } from './lessons/author.model';
 
 // Auth state
 export interface AuthState {
@@ -25,6 +26,11 @@ export interface LessonsState {
     errorMsg?: string;
 }
 
+// Authors state
+export interface AuthorsState {
+    authors?: AuthorModel[];
+}
+
 /*
 App state
 */
@@ -32,6 +38,7 @@ export interface AppState {
     auth: AuthState;
     user: UserState;
     lessonsData: LessonsState;
+    authors: AuthorsState;
 }
 
 /*
@@ -45,3 +52,7 @@ export const userSelector = createSelector(selectUser, (state: UserState) => sta
 
 export const selectLessons = (state: AppState) => state.lessonsData;
 export const lessonsSelector = createSelector(selectLessons, (state: LessonsState) => state);
+
+
+export const selectAuthors = (state: AppState) => state.authors;
+export const authorsSelector = createSelector(selectAuthors, (state: AuthorsState) => state.authors);

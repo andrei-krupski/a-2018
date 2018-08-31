@@ -1,8 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { MatDialogModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+import {
+  MatDialogModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatChipsModule,
+  MatAutocompleteModule
+} from '@angular/material';
 
 import { RouterModule } from '@angular/router';
 import { routes } from './lessons.routes';
@@ -24,9 +30,12 @@ import { LessonAuthorComponent } from './lesson-author/lesson-author.component';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatDialogModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatChipsModule,
+    MatAutocompleteModule,
     RouterModule.forRoot(routes)
   ],
   declarations: [

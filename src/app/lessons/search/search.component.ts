@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { FormGroup, FormControl } from '@angular/forms';
 import { filter, debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -10,16 +10,16 @@ import { filter, debounceTime } from 'rxjs/operators';
 export class SearchComponent implements OnInit {
   @Output() searchEvent = new EventEmitter<string>();
 
-  searchInputText: string;
-  searchInputObsSourse = new Subject();
-  private searchInputObs = this.searchInputObsSourse.asObservable();
+  searchForm = new FormGroup({
+    searchInputText: new FormControl('')
+  });
 
   ngOnInit() {
-    this.searchInputObs
+    this.searchForm.controls.searchInputText.valueChanges
       .pipe(debounceTime(300))
       .pipe(filter((value: string) => value.length >= 3 || value === ''))
       .subscribe((value: string) => {
-        this.searchEvent.emit(this.searchInputText);
+        this.searchEvent.emit(value);
       });
   }
 }

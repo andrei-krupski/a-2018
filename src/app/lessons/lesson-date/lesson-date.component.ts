@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -11,6 +11,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class LessonDateComponent implements ControlValueAccessor {
   @Input() fieldId;
+  @ViewChild('picker') picker;
+
   date: string;
   onChange: (_: any) => void = (_: any) => {};
   onTouched: () => void = () => {};
@@ -32,5 +34,12 @@ export class LessonDateComponent implements ControlValueAccessor {
 
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  onInputInteraction(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.picker.opened = true;
+    event.target.blur();
   }
 }

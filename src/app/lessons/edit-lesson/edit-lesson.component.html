@@ -1,40 +1,68 @@
-<form class="edit-lesson-form" role="form">
+<form class="edit-lesson-form" role="form" [formGroup]="lessonForm" (ngSubmit)="saveLesson()" novalidate>
   <div class="edit-lesson-form__error" *ngIf="error">
     Please fill required fields.
   </div>
   <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--title">
     <label for="lessonTitle" class="edit-lesson-form__label">Title:</label>
-    <input type="text" class="form-control app-input" id="lessonTitle" name="lessonTitle" [(ngModel)]="lesson.title" required>
+    <input type="text" class="form-control app-input" id="lessonTitle" formControlName="title" required>
+    <div class="edit-lesson-form__errors-box" *ngIf="lessonForm.controls.title.errors && (lessonForm.touched || lessonForm.dirty)">
+      <span *ngIf="lessonForm.controls.title.errors.required" class="edit-lesson-form__errors-box-message">
+        Please enter a title
+      </span>
+      <span *ngIf="lessonForm.controls.title.errors.maxlength" class="edit-lesson-form__errors-box-message">
+        Title is too long
+      </span>
+    </div>
   </div>
 
   <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--description">
     <label for="lessonDescription" class="edit-lesson-form__label">Description:</label>
-    <textarea class="form-control app-input" id="lessonDescription" name="lessonDescription" rows="3" [(ngModel)]="lesson.description" required></textarea>
+    <textarea class="form-control app-input" id="lessonDescription" rows="3" formControlName="description" required></textarea>
+    <div class="edit-lesson-form__errors-box" *ngIf="lessonForm.controls.description.errors && (lessonForm.touched || lessonForm.dirty)">
+      <span *ngIf="lessonForm.controls.description.errors.required" class="edit-lesson-form__errors-box-message">
+        Please enter a description
+      </span>
+      <span *ngIf="lessonForm.controls.description.errors.maxlength" class="edit-lesson-form__errors-box-message">
+        Description is too long
+      </span>
+    </div>
   </div>
 
   <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--date">
     <label for="lessonDate" class="edit-lesson-form__label">Date:</label>
-    <app-lesson-date fieldId="lessonDate" name="lessonDate" [(ngModel)]="lesson.creationDate"></app-lesson-date>
+    <app-lesson-date fieldId="lessonDate" formControlName="creationDate"></app-lesson-date>
+    <div class="edit-lesson-form__errors-box" *ngIf="lessonForm.controls.creationDate.errors && (lessonForm.touched || lessonForm.dirty)">
+      <span class="edit-lesson-form__errors-box-message">
+        Please choose a date
+      </span>
+    </div>
   </div>
 
   <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--duration">
     <label for="lessonDuration" class="edit-lesson-form__label">Duration:</label>
-    <app-lesson-duration fieldId="lessonDuration" name="lessonDuration" [(ngModel)]="lesson.duration"></app-lesson-duration>
+    <app-lesson-duration fieldId="lessonDuration" formControlName="duration"></app-lesson-duration>
+    <div class="edit-lesson-form__errors-box" *ngIf="lessonForm.controls.duration.errors && (lessonForm.touched || lessonForm.dirty)">
+        <span class="edit-lesson-form__errors-box-message">
+          Please enter a integer above zero
+        </span>
+    </div>
   </div>
 
   <div class="form-group edit-lesson-form__form-group edit-lesson-form__form-group--author">
     <label for="lessonAuthor" class="edit-lesson-form__label">Authors:</label>
-    <!-- <app-lesson-author fieldId="lessonAuthor"></app-lesson-author> -->
-    <input type="text" class="form-control app-input" id="lessonAuthor" name="lessonAuthor" [(ngModel)]="lesson.author" required>
+    <app-lesson-author fieldId="lessonAuthor" formControlName="authors"></app-lesson-author>
+    <div class="edit-lesson-form__errors-box" *ngIf="lessonForm.controls.authors.errors && (lessonForm.touched || lessonForm.dirty)">
+      <span class="edit-lesson-form__errors-box-message">Please select at lest one author</span>
+    </div>
   </div>
 
   <div class="form-group edit-lesson-form__form-group  edit-lesson-form__form-group--top-rated">
     <label for="lessonTopRated" class="edit-lesson-form__label">Top rated:</label>
-    <input type="checkbox" class="form-control" id="lessonTopRated" name="lessonTopRated" [(ngModel)]="lesson.topRated">
+    <input type="checkbox" class="form-control" id="lessonTopRated" formControlName="topRated">
   </div>
 
   <div class="edit-lesson-form__buttons-box">
-    <button class="app-button app-button-primary edit-lesson-form__save-btn" (click)="saveLesson()">
+    <button type="submit" class="app-button app-button-primary edit-lesson-form__save-btn">
       <span class="app-button__inner">
         <span class="app-button__text">Save</span>
       </span>
